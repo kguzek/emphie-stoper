@@ -5,14 +5,27 @@
 		background-color: lightgrey;
 		padding-top: 10px;
 	}
-	main {
+	.container {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		background-color: white;
-		border-radius: 15px;
 		padding: 15px;
+		background-color: white;
+	}
+	aside {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		min-width: 200px;
+		border-bottom-right-radius: 15px;
+
+		h3 {
+			margin: 10px;
+		}
+	}
+	main {
 		min-width: 40%;
+		border-radius: 15px;
 	}
 
 	.btn {
@@ -31,11 +44,18 @@
 			background-color: #ff9999;
 		}
 
-		&.disabled {
+		&[disabled] {
 			cursor: not-allowed;
 			background-color: #e5e5e5;
 			border-color: #aaa;
 			color: grey;
+		}
+	}
+	.time {
+		button {
+			align-text: center;
+			border: none;
+			margin-left: 0.5rem;
 		}
 	}
 </style>
@@ -43,20 +63,22 @@
 	import { onMount } from "svelte";
 
 	let formattedTime = "00:00:00";
-  let stopwatchMillis = "000";
-	let startTime;	
+  let stopwatchMilliseconds = "000";
+	let startTime: number;
 	let stopwatchStarted = false;
+
+	let times: string[] = [];
 
 	const divMod = (dividend: number, divisor: number) => [Math.floor(dividend / divisor), dividend % divisor];
 
-	function formatTime(millis: number) {
+	function formatTime(milliseconds: number) {
 		let hours, minutes, seconds;
-		[seconds, millis] = divMod(millis, 1000);
+		[seconds, milliseconds] = divMod(milliseconds, 1000);
 		[minutes, seconds] = divMod(seconds, 60);
 		[hours, minutes] = divMod(minutes, 60);
 		const parts = [hours, minutes, seconds].map((part) => `${part}`.padStart(2, "0"));
 		formattedTime = parts.join(":");
-		stopwatchMillis = `${millis}`.padStart(3, "0");
+		stopwatchMilliseconds = `${milliseconds}`.padStart(3, "0");
 	}
 
 	function tickTime() {
@@ -75,22 +97,40 @@
 	}
 
 	function handleTime() {
+		if (!stopwatchStarted) return;
+		const newTime = { primary: formattedTime, secondary: stopwatchMilliseconds };
+		times = [...times, newTime];
 	}
+
+	const deleteTime = (idxToDelete: number) => times = times.filter((_, idx) => idx !== idxToDelete);
 
 	onMount(() => {
 		tickTime();
 	});
 </script>
-<main>
+<aside class="container">
+	<h3>Pomiary</h3>
+	{#each times as time, idx}
+		<div class="time">
+			{time.primary}
+			<small>{time.secondary}</small>
+			<button on:click={() => deleteTime(idx)}>x</button>
+		</div>
+	{/each}
+	{#if times.length === 0}
+		<i>Brak pomiarów</i>
+	{/if}
+</aside>
+<main class="container">
 	<div class="stopwatch">
 		{formattedTime}
-		<small>{stopwatchMillis}</small>
+		<small>{stopwatchMilliseconds}</small>
 	</div>
 	<div class="buttons">
 		<button on:click={toggleStopwatch} class={stopwatchStarted ? "btn stop" : "btn start"}>
 			{stopwatchStarted ? "Stop" : "Start"}
 		</button>
-		<button on:click={handleTime} class={stopwatchStarted ? "btn" : "btn disabled"}>
+		<button on:click={handleTime} class="btn" disabled={!stopwatchStarted}>
 			Pomiar
 		</button>
 	</div>
