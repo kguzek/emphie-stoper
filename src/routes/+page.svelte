@@ -53,7 +53,6 @@
 	}
 	.time {
 		button {
-			align-text: center;
 			border: none;
 			margin-left: 0.5rem;
 		}
@@ -67,7 +66,7 @@
 	let startTime: number;
 	let stopwatchStarted = false;
 
-	let times: string[] = [];
+	let times: {primary: string; secondary: string}[] = [];
 
 	const divMod = (dividend: number, divisor: number) => [Math.floor(dividend / divisor), dividend % divisor];
 
