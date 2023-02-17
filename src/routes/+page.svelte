@@ -1,6 +1,6 @@
 <style lang="less">
-	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=Poppins&family=Roboto+Mono:wght@700&display=swap');
+	
 	:global(body) {
 		background-color: #eaeaea;
 		font-family: 'Bebas Neue', cursive;
@@ -16,15 +16,20 @@
 	.stopwatch {
 		justify-content: center;
 		height: 100%;
-		min-width: 500px;
 
-		div {
-			width: 400px;
-		}
-		
 		.current-reading {
+			position: relative;			
 			font-size: xxx-large;
-			margin-left: 6rem;
+
+			b {
+			  font-family: 'Roboto Mono', monospace;
+			}
+
+			small {
+				position: absolute;
+				margin-left: 0.5rem;
+				bottom: 2px;
+			}
 		}
 
 		.buttons {
@@ -99,6 +104,10 @@
 		padding: 15px 20px;
 		border-radius: 15px;
 		box-shadow: 0px 0px 5px lightgrey;
+
+		.clock {
+			width: 4rem;
+		}
 	}
 </style>
 <script lang="ts">
@@ -106,7 +115,8 @@
 	import Button from "../components/Button.svelte"
 
 	let formattedTime = "00:00:00";
-  let stopwatchMilliseconds = "000";
+	let stopwatchMilliseconds = "000";
+	let currentTime = "";
 	let startTime: number;
 	let stopwatchStarted = false;
 
@@ -130,8 +140,10 @@
 	}
 
 	function tickTime() {
+		const now = new Date();
+		currentTime = now.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"});
 		if (stopwatchStarted) {
-			const timeElapsed = new Date().getTime() - startTime;
+			const timeElapsed = now.getTime() - startTime;
 			formatTime(timeElapsed);
 		}
 		requestAnimationFrame(tickTime);
@@ -172,24 +184,22 @@
 			</ol>
 		</aside>
 		<div class="stopwatch container">
-			<div>
-				<div class="current-reading">
-					<b>{formattedTime}</b>
+			<div class="current-reading">
+				<b>{formattedTime}</b>
+				{#if formattedTime + stopwatchMilliseconds !== "00:00:00000"}
 					<small>{stopwatchMilliseconds}</small>
-				</div>
-				<div class="buttons container">
-					<Button
+				{/if}
+			</div>
+			<div class="buttons container">
+				<Button
 					on:click={toggleStopwatch}
 					className={stopwatchStarted ? "stop" : "start"}
-					label={stopwatchStarted ? "Stop" : "Start"}
-					/>
-					<Button on:click={handleTime} disabled={!stopwatchStarted} label="Pomiar" />
-				</div>
-			</div>
+		  		label={stopwatchStarted ? "Stop" : "Start"}
+			  />
+				<Button on:click={handleTime} disabled={!stopwatchStarted} label="Pomiar" />
+		  </div>
 		</div>
-		<div class="clock">
-			<b>{new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"})}</b>
-		</div>
+	  <b class="clock">{currentTime}</b>
 	</main>
 </div>
 
