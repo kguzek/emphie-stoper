@@ -2,6 +2,9 @@ function create_prod_branch() {
   git switch --orphan prod && echo "Created new production branch."
 }
 
+# Use the first command parameter, or a generic default commit message
+COMMIT_MESSAGE=${1:-"deploy latest app version"}
+
 if [ ! -d "./build" ]; then
   echo "No build files to move."
   exit 1
@@ -20,6 +23,6 @@ mv build/* build/.[!.]* .
 rmdir build && echo "Moved build files." || exit 1
 touch .nojekyll
 
-git add . && git commit -m "build latest app version" || exit 1
+git add . && git commit -m "$COMMIT_MESSAGE" || exit 1
 git push origin prod && echo "Successfully pushed new commit."
 git switch main
