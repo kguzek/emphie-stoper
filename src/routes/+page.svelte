@@ -155,6 +155,7 @@
 			flex-direction: row;
 			justify-content: center;
 			gap: 10px;
+			width: 100%;
 		}
 	}
 
@@ -171,8 +172,9 @@
 		display: flex;
 		position: relative;
 		background-color: white;
-		width: 70%;
-		height: 70%;
+		width: 90%;
+		height: 100%;
+		margin: 10vh;
 		gap: 10px;
 		border-radius: 15px;
 		box-shadow: 0px 0px 50px lightgrey;
@@ -180,17 +182,21 @@
 	}
 
 	aside {
+		position: relative;
 		min-width: 300px;
+		height: 100%;
 		border-top-left-radius: 15px;
 		border-bottom-left-radius: 15px;
 		color: #808080;
 		background-color: #d5e5f5;
+		box-shadow: 0px 0px 100px grey;
 		transition: all 500ms;
+		z-index: 1;
 
 		.btn-toggle-sidebar {
 			all: unset;
-			position: relative;
-			right: -105px;
+			position: absolute;
+			right: -10px;
 			top: 10px;
 			cursor: pointer;
 			transition: all 500ms;
@@ -206,6 +212,7 @@
 
 		&.hidden {
 			margin-left: -300px;
+			box-shadow: none;
 
 			.btn-toggle-sidebar {
 				margin-left: 115px;
@@ -231,6 +238,7 @@
 			padding: 0px 25px;
 			margin: 0px;
 			width: calc(100% - 2 * 25px);
+			height: 100%;
 			list-style-position: inside;
 			overflow-y: auto;
 		}
@@ -258,5 +266,26 @@
 		top: 15px;
 		right: 20px;
 		width: 4rem;
+	}
+
+	@media screen and (max-width: 600px) {
+		.clock {
+			visibility: hidden;
+		}
+
+		.current-reading small {
+			visibility: hidden;
+		}
+	}
+
+	@media screen and (max-width: 1000px) {
+		aside {
+			position: absolute;
+			min-width: 225px;
+
+			&.hidden {
+				margin-left: -225px;
+			}
+		}
 	}
 </style>

@@ -17,7 +17,9 @@
 		border-radius: 20px;
 		background-color: #58f;
 		cursor: pointer;
-		width: 150px;
+		width: 40%;
+		min-width: 100px;
+		max-width: 200px;
 		text-transform: uppercase;
 
 		&.stop {
@@ -29,7 +31,7 @@
 			background-color: #b0b0b0;
 		}
 
-		&:active {
+		&:active:not([disabled]) {
 			opacity: 0.8;
 		}
 	}
