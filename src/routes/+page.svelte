@@ -175,7 +175,7 @@
 		height: 70%;
 		gap: 10px;
 		border-radius: 15px;
-		box-shadow: 0px 0px 5px lightgrey;
+		box-shadow: 0px 0px 50px lightgrey;
 		overflow: hidden;
 	}
 
