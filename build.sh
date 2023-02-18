@@ -9,8 +9,6 @@ fi
 
 git switch prod || create_prod_branch
 
-exit 0
-
 # Remove all previously tracked files
 git ls-files | xargs -r rm
 
@@ -19,6 +17,7 @@ git checkout main .gitignore
 
 mv build/* build/.[!.]* .
 rmdir build && echo "Moved build files." || exit 1
+touch .nojekyll
 
 git add . && git commit -m "build latest app version" || exit 1
 git push origin prod && echo "Successfully pushed new commit."
