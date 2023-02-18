@@ -9,8 +9,9 @@ fi
 
 git switch prod || create_prod_branch
 
-# Remove all previously tracked files
+# Remove all previously tracked files and empty directories
 git ls-files | xargs -r rm
+find . -empty -type d -delete
 
 # But restore .gitignore from main branch
 git checkout main .gitignore
