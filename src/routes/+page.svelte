@@ -172,7 +172,7 @@
 		display: flex;
 		position: relative;
 		background-color: white;
-		width: 90%;
+		width: 70%;
 		height: 100%;
 		margin: 10vh;
 		gap: 10px;
@@ -279,6 +279,9 @@
 	}
 
 	@media screen and (max-width: 1000px) {
+		main {
+			width: 90%;
+		}
 		aside {
 			position: absolute;
 			min-width: 225px;
