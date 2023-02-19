@@ -193,11 +193,12 @@
 		position: relative;
 		min-width: 300px;
 		height: 100%;
-		border-top-left-radius: 15px;
-		border-bottom-left-radius: 15px;
-		color: #808080;
-		background-color: #d5e5f5;
-		box-shadow: 0px 0px 100px grey;
+		border-radius: 15px;
+		// background-color: #d5e5f5;
+		background: linear-gradient(135deg, #d0e0f0aa, #d5e5f577);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		box-shadow: 0px 8px 32px grey;
 		transition: all 500ms;
 		z-index: 1;
 		gap: 15px;
@@ -238,7 +239,9 @@
 				margin-left: 115px;
 
 				b {
+					font-size: large;
 					opacity: 1;
+					color: #808080;
 				}
 
 				:global(.cross) {
@@ -252,6 +255,7 @@
 		}
 
 		h3 {
+			color: #6b6b6b;
 			margin: 0px;
 		}
 
@@ -272,10 +276,12 @@
 		display: flex;
 		align-items: center;
 		gap: 5px;
+		color: #808080;
 		background-color: white;
 		padding: 5px 10px;
 		border-radius: 5px;
 		counter-increment: times 1;
+		box-shadow: 0px 4px 8px grey;
 
 		&::before {
 			content: counter(times) '. ';
