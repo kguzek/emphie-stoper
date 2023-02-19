@@ -104,9 +104,9 @@
 		<div class="stopwatch container">
 			<div class="current-reading">
 				<b>{formattedTime}</b>
-				{#if formattedTime + stopwatchMilliseconds !== '00:00:00000'}
-					<small>{stopwatchMilliseconds}</small>
-				{/if}
+				<small class={formattedTime + stopwatchMilliseconds === '00:00:00000' ? 'hidden' : ''}
+					>{stopwatchMilliseconds}</small
+				>
 			</div>
 			<div class="container-row">
 				<Button
@@ -162,6 +162,10 @@
 				position: absolute;
 				margin-left: 0.5rem;
 				bottom: 5px;
+
+				&.hidden {
+					visibility: hidden;
+				}
 			}
 		}
 	}
@@ -304,6 +308,7 @@
 				position: static !important;
 				margin: 1vw 5px 0px !important;
 				width: calc(1rem + 10vw) !important;
+				visibility: visible !important;
 			}
 		}
 	}
