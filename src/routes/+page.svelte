@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import Button from '../components/Button.svelte';
 	import Icon from '../components/Icon.svelte';
-	import BtnTrash from '../components/BtnTrash.svelte';
 
 	let formattedTime = '00:00:00';
 	let stopwatchMilliseconds = '000';
@@ -81,12 +80,15 @@
 		<aside class="container hidden" bind:this={sidebarElement}>
 			<button on:click={toggleSidebar} class="btn-toggle-sidebar">
 				<Icon name="timer" />
-				<Icon name="cross" />
+				<Icon name="cross" colour="#f55" />
 				{#if times.length > 0}
 					<b>{times.length}</b>
 				{/if}
 			</button>
 			<h3>Zapisane czasy</h3>
+			{#if times.length > 0}
+				<Button label="Usuń wszystkie" className="red clear-times" on:click={() => (times = [])} />
+			{/if}
 			<ol>
 				{#each times as time, idx}
 					<li class="time">
@@ -94,7 +96,9 @@
 							<b>{time.primary}</b>
 							<small>{time.secondary}</small>
 						</div>
-						<BtnTrash on:click={() => deleteTime(idx)} />
+						<button class="btn-delete" on:click={() => deleteTime(idx)}>
+							<Icon name="trash" dimensions={18} colour="#f55" />
+						</button>
 					</li>
 				{/each}
 			</ol>
@@ -108,9 +112,9 @@
 			</div>
 			<div class="buttons container">
 				<Button
-					on:click={toggleStopwatch}
-					className={stopwatchStarted ? 'stop' : 'start'}
+					className={stopwatchStarted ? 'red' : ''}
 					label={stopwatchStarted ? 'Stop' : 'Start'}
+					on:click={toggleStopwatch}
 				/>
 				<Button on:click={handleTime} disabled={!stopwatchStarted} label="Pomiar" />
 			</div>
@@ -195,6 +199,7 @@
 		box-shadow: 0px 0px 100px grey;
 		transition: all 500ms;
 		z-index: 1;
+		gap: 15px;
 
 		.btn-toggle-sidebar {
 			all: unset;
@@ -246,7 +251,7 @@
 		}
 
 		h3 {
-			margin: 15px;
+			margin: 0px;
 		}
 
 		ol {
@@ -276,6 +281,16 @@
 			display: flex;
 			align-items: center;
 			gap: 5px;
+		}
+
+		button {
+			border: none;
+			float: right;
+			background-color: transparent;
+			cursor: pointer;
+			display: flex;
+			height: 100%;
+			align-items: center;
 		}
 	}
 

@@ -4,7 +4,7 @@
 	export let disabled: boolean = false;
 </script>
 
-<button on:click class={`btn ${className}`} {disabled}>
+<button on:click class="btn {className}" {disabled}>
 	<b>{label}</b>
 </button>
 
@@ -22,8 +22,12 @@
 		max-width: 200px;
 		text-transform: uppercase;
 
-		&.stop {
+		&.red {
 			background-color: #f55;
+		}
+
+		&.clear-times {
+			width: 200px;
 		}
 
 		&[disabled] {
