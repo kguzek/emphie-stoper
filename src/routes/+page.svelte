@@ -108,7 +108,7 @@
 					<small>{stopwatchMilliseconds}</small>
 				{/if}
 			</div>
-			<div class="buttons container">
+			<div class="container-row">
 				<Button
 					className={stopwatchStarted ? 'red' : ''}
 					label={stopwatchStarted ? 'Stop' : 'Start'}
@@ -137,6 +137,14 @@
 		align-items: center;
 	}
 
+	.container-row {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		gap: 10px;
+		width: 100%;
+	}
+
 	.stopwatch {
 		width: 100%;
 		height: 100%;
@@ -153,15 +161,8 @@
 			small {
 				position: absolute;
 				margin-left: 0.5rem;
-				bottom: 2px;
+				bottom: 5px;
 			}
-		}
-
-		.buttons {
-			flex-direction: row;
-			justify-content: center;
-			gap: 10px;
-			width: 100%;
 		}
 	}
 
@@ -294,12 +295,16 @@
 	}
 
 	@media screen and (max-width: 600px) {
-		.clock {
-			visibility: hidden;
-		}
+		.current-reading {
+			font-size: calc(1rem + 5vw) !important;
+			display: flex;
+			justify-content: center;
 
-		.current-reading small {
-			visibility: hidden;
+			small {
+				position: static !important;
+				margin: 1vw 5px 0px !important;
+				width: calc(1rem + 10vw) !important;
+			}
 		}
 	}
 
