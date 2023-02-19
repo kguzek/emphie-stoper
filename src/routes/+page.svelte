@@ -92,10 +92,8 @@
 			<ol>
 				{#each times as time, idx}
 					<li class="time">
-						<div>
-							<b>{time.primary}</b>
-							<small>{time.secondary}</small>
-						</div>
+						<b>{time.primary}</b>
+						<small>{time.secondary}</small>
 						<button class="btn-delete" on:click={() => deleteTime(idx)}>
 							<Icon name="trash" dimensions={18} colour="#f55" />
 						</button>
@@ -131,6 +129,7 @@
 		font-family: 'Bebas Neue', cursive;
 		font-family: 'Poppins', sans-serif;
 		color: #444;
+		margin: 0px;
 	}
 	.container {
 		display: flex;
@@ -167,9 +166,6 @@
 	}
 
 	.root {
-		position: absolute;
-		top: 0px;
-		left: 0px;
 		height: 100vh;
 		width: 100vw;
 		justify-content: center;
@@ -268,29 +264,25 @@
 	}
 
 	.time {
-		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 5px;
 		background-color: white;
 		padding: 5px 10px;
 		border-radius: 5px;
+		counter-increment: times 1;
 
-		div {
-			position: absolute;
-			height: 100%;
-			top: 0px;
-			left: 30px;
-			display: flex;
-			align-items: center;
-			gap: 5px;
+		&::before {
+			content: counter(times) '. ';
+			min-width: 1rem;
+			counter-reset: 1;
 		}
 
-		button {
+		.btn-delete {
+			margin-left: auto;
 			border: none;
-			float: right;
 			background-color: transparent;
 			cursor: pointer;
-			display: flex;
-			height: 100%;
-			align-items: center;
 		}
 	}
 
@@ -317,10 +309,10 @@
 		}
 		aside {
 			position: absolute;
-			min-width: 225px;
+			min-width: 240px;
 
 			.btn-toggle-sidebar {
-				left: 75px;
+				left: 80px;
 
 				:global(.cross) {
 					scale: 85%;
@@ -328,10 +320,10 @@
 			}
 
 			&.hidden {
-				margin-left: -225px;
+				margin-left: -240px;
 
 				.btn-toggle-sidebar {
-					margin-left: 90px;
+					margin-left: 100px;
 				}
 			}
 		}

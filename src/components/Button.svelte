@@ -27,7 +27,7 @@
 		}
 
 		&.clear-times {
-			width: 200px;
+			width: 150px;
 		}
 
 		&[disabled] {
