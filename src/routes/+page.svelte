@@ -195,9 +195,9 @@
 
 		.btn-toggle-sidebar {
 			all: unset;
-			position: absolute;
-			right: -10px;
-			top: 10px;
+			position: relative;
+			left: 100px;
+			top: 12px;
 			cursor: pointer;
 			transition: all 500ms;
 
@@ -286,8 +286,20 @@
 			position: absolute;
 			min-width: 225px;
 
+			.btn-toggle-sidebar {
+				left: 75px;
+
+				:global(.cross) {
+					scale: 85%;
+				}
+			}
+
 			&.hidden {
 				margin-left: -225px;
+
+				.btn-toggle-sidebar {
+					margin-left: 90px;
+				}
 			}
 		}
 	}
