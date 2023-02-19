@@ -39,10 +39,3 @@
 >
 	{@html svg.svg}
 </svg>
-
-<style>
-	svg {
-		position: absolute;
-		transition: opacity 500ms;
-	}
-</style>

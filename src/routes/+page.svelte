@@ -82,6 +82,9 @@
 			<button on:click={toggleSidebar} class="btn-toggle-sidebar">
 				<Icon name="timer" />
 				<Icon name="cross" />
+				{#if times.length > 0}
+					<b>{times.length}</b>
+				{/if}
 			</button>
 			<h3>Zapisane czasy</h3>
 			<ol>
@@ -201,6 +204,17 @@
 			cursor: pointer;
 			transition: all 500ms;
 
+			b {
+				opacity: 0;
+				top: 6px;
+				left: 2.5rem;
+			}
+
+			:global(> *) {
+				position: absolute;
+				transition: opacity 500ms;
+			}
+
 			:global(.cross) {
 				opacity: 1;
 			}
@@ -216,6 +230,10 @@
 
 			.btn-toggle-sidebar {
 				margin-left: 115px;
+
+				b {
+					opacity: 1;
+				}
 
 				:global(.cross) {
 					opacity: 0;
