@@ -30,13 +30,17 @@
 			width: 150px;
 		}
 
+		&:not(:active, [disabled]) {
+			box-shadow: 0px 4px 8px grey;
+		}
+
 		&[disabled] {
 			cursor: not-allowed;
 			background-color: #b0b0b0;
 		}
 
-		&:active:not([disabled]) {
-			opacity: 0.8;
-		}
+		// &:active:not([disabled]) {
+		// 	opacity: 0.8;
+		// }
 	}
 </style>
