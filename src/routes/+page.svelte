@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import Button from '../components/Button.svelte';
 	import Sidebar from '../components/Sidebar.svelte';
+	import Statusbar from '../components/Statusbar.svelte';
 	import type { Time } from '../models';
 	import { formatTime } from '../util';
 
@@ -10,11 +12,11 @@
 	let startTime: number | undefined;
 	let formattedTime = '00:00:00';
 	let stopwatchMilliseconds = '000';
-	$: currentTime = now.toLocaleTimeString([], {
-		hour: '2-digit',
-		minute: '2-digit',
-		second: '2-digit'
-	});
+
+	// Read user's theme setting
+	const userDarkMode = browser && localStorage.getItem('dark-mode');
+	// Enable dark mode by default or if the user last used it
+	let darkModeEnabled = userDarkMode !== 'false';
 
 	/** Updates the clock and current stopwatch reading for this frame. */
 	function tickTime() {
@@ -45,7 +47,7 @@
 	});
 </script>
 
-<div class="root container">
+<div class="root container {darkModeEnabled ? 'dark' : 'light'}">
 	<main>
 		<Sidebar {times} />
 		<div class="stopwatch container">
@@ -64,7 +66,11 @@
 				<Button on:click={handleTime} disabled={startTime === undefined} label="Pomiar" />
 			</div>
 		</div>
-		<b class="clock">{currentTime}</b>
+		<Statusbar
+			{now}
+			{darkModeEnabled}
+			toggleDarkMode={() => (darkModeEnabled = !darkModeEnabled)}
+		/>
 	</main>
 </div>
 
@@ -72,12 +78,17 @@
 	@import url('https://fonts.googleapis.com/css2?family=Poppins&family=Roboto+Mono:wght@700&display=swap');
 
 	:global(body) {
-		background-color: #eaeaea;
 		font-family: 'Bebas Neue', cursive;
 		font-family: 'Poppins', sans-serif;
-		color: #444;
 		margin: 0px;
 	}
+
+	:global(button) {
+		border: none;
+		background: none;
+		cursor: pointer;
+	}
+
 	:global(.container) {
 		display: flex;
 		flex-direction: column;
@@ -100,6 +111,7 @@
 		.current-reading {
 			position: relative;
 			font-size: xxx-large;
+			color: var(--text-colour-accent);
 
 			b {
 				font-family: 'Roboto Mono', monospace;
@@ -120,26 +132,45 @@
 	.root {
 		height: 100vh;
 		justify-content: center;
+		color: var(--text-colour-main);
+		background-color: var(--background-colour-accent);
+
+		&.light {
+			--background-colour-main: #fff;
+			--background-colour-accent: #eaeaea;
+			--box-shadow-colour: #999;
+			--text-colour-main: #808080;
+			--text-colour-accent: #444;
+			--text-colour-alt: #6b6b6b;
+			--sidebar-colour-top: #c9d8e777;
+			--sidebar-colour-bottom: #6c9fddaa;
+			--disabled-colour: #bbb;
+		}
+
+		&.dark {
+			--background-colour-main: #171717;
+			--background-colour-accent: #333;
+			--box-shadow-colour: #111;
+			--text-colour-main: #808080;
+			--text-colour-accent: #bbb;
+			--text-colour-alt: #fff;
+			--sidebar-colour-top: #33527eaa;
+			--sidebar-colour-bottom: #0b0b0c77;
+			--disabled-colour: #444;
+		}
 	}
 
 	main {
 		display: flex;
 		position: relative;
-		background-color: white;
+		background-color: var(--background-colour-main);
 		width: 70%;
 		height: 100%;
 		margin: 10vh;
 		gap: 10px;
 		border-radius: 15px;
-		box-shadow: 0px 0px 50px lightgrey;
+		box-shadow: 0px 0px 50px var(--box-shadow-colour);
 		overflow: hidden;
-	}
-
-	.clock {
-		position: absolute;
-		top: 15px;
-		right: 20px;
-		width: 4rem;
 	}
 
 	@media screen and (max-width: 600px) {

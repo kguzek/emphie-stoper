@@ -13,10 +13,8 @@
 		font-weight: bold;
 		color: white;
 		padding: 10px;
-		border: none;
 		border-radius: 20px;
 		background-color: #58f;
-		cursor: pointer;
 		width: 40%;
 		min-width: 100px;
 		max-width: 200px;
@@ -31,12 +29,12 @@
 		}
 
 		&:not(:active, [disabled]) {
-			box-shadow: 0px 4px 8px grey;
+			box-shadow: 0px 4px 8px var(--box-shadow-colour);
 		}
 
 		&[disabled] {
 			cursor: not-allowed;
-			background-color: #b0b0b0;
+			background-color: var(--disabled-colour);
 		}
 
 		// &:active:not([disabled]) {
