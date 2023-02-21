@@ -1,106 +1,53 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Button from '../components/Button.svelte';
-	import Icon from '../components/Icon.svelte';
+	import Sidebar from '../components/Sidebar.svelte';
+	import type { Time } from '../models';
+	import { formatTime } from '../util';
 
+	let times: Time[] = [];
+	let now = new Date();
+	let startTime: number | undefined;
 	let formattedTime = '00:00:00';
 	let stopwatchMilliseconds = '000';
-	let currentTime = '';
-	let startTime: number;
-	let stopwatchStarted = false;
-	let sidebarElement: Element;
+	$: currentTime = now.toLocaleTimeString([], {
+		hour: '2-digit',
+		minute: '2-digit',
+		second: '2-digit'
+	});
 
-	let times: { primary: string; secondary: string }[] = [
-		// {
-		// 	primary: '12:34:56',
-		// 	secondary: '789'
-		// }
-	];
-
-	const divMod = (dividend: number, divisor: number) => [
-		Math.floor(dividend / divisor),
-		dividend % divisor
-	];
-
-	function formatTime(milliseconds: number) {
-		let hours, minutes, seconds;
-		[seconds, milliseconds] = divMod(milliseconds, 1000);
-		[minutes, seconds] = divMod(seconds, 60);
-		[hours, minutes] = divMod(minutes, 60);
-		const parts = [hours, minutes, seconds].map((part) => `${part}`.padStart(2, '0'));
-		formattedTime = parts.join(':');
-		stopwatchMilliseconds = `${milliseconds}`.padStart(3, '0');
-	}
-
+	/** Updates the clock and current stopwatch reading for this frame. */
 	function tickTime() {
-		const now = new Date();
-		currentTime = now.toLocaleTimeString([], {
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit'
-		});
-		if (stopwatchStarted) {
+		now = new Date();
+		if (startTime !== undefined) {
 			const timeElapsed = now.getTime() - startTime;
-			formatTime(timeElapsed);
+			[formattedTime, stopwatchMilliseconds] = formatTime(timeElapsed);
 		}
+		// Calls this function recursively every frame.
 		requestAnimationFrame(tickTime);
 	}
 
+	/** If the stopwatch is ticking, sets the start time to `undefined`. Otherwise, sets it to the current time. */
 	function toggleStopwatch() {
-		stopwatchStarted = !stopwatchStarted;
-		if (stopwatchStarted) {
-			startTime = new Date().getTime();
-		}
+		startTime = startTime === undefined ? new Date().getTime() : undefined;
 	}
 
-	function toggleSidebar() {
-		if (sidebarElement.classList.contains('hidden')) {
-			sidebarElement.classList.remove('hidden');
-		} else {
-			sidebarElement.classList.add('hidden');
-		}
-	}
-
+	/** If the stopwatch is currently ticking, adds the current time to the list of times. */
 	function handleTime() {
-		if (!stopwatchStarted) return;
-		const newTime = { primary: formattedTime, secondary: stopwatchMilliseconds };
+		if (startTime === undefined) return;
+		const newTime: Time = { primary: formattedTime, secondary: stopwatchMilliseconds };
 		times = [...times, newTime];
 	}
 
-	const deleteTime = (idxToDelete: number) =>
-		(times = times.filter((_, idx) => idx !== idxToDelete));
-
 	onMount(() => {
+		// Starts the frame tick loop.
 		tickTime();
 	});
 </script>
 
 <div class="root container">
 	<main>
-		<aside class="container hidden" bind:this={sidebarElement}>
-			<button on:click={toggleSidebar} class="btn-toggle-sidebar">
-				<Icon name="timer" />
-				<Icon name="cross" colour="#f55" />
-				{#if times.length > 0}
-					<b>{times.length}</b>
-				{/if}
-			</button>
-			<h3>Zapisane czasy</h3>
-			{#if times.length > 0}
-				<Button label="Usuń wszystkie" className="red clear-times" on:click={() => (times = [])} />
-			{/if}
-			<ol>
-				{#each times as time, idx}
-					<li class="time">
-						<b>{time.primary}</b>
-						<small>{time.secondary}</small>
-						<button class="btn-delete" on:click={() => deleteTime(idx)}>
-							<Icon name="trash" dimensions={18} colour="#f55" />
-						</button>
-					</li>
-				{/each}
-			</ol>
-		</aside>
+		<Sidebar {times} />
 		<div class="stopwatch container">
 			<div class="current-reading">
 				<b>{formattedTime}</b>
@@ -110,11 +57,11 @@
 			</div>
 			<div class="container-row">
 				<Button
-					className={stopwatchStarted ? 'red' : ''}
-					label={stopwatchStarted ? 'Stop' : 'Start'}
+					className={startTime === undefined ? '' : 'red'}
+					label={startTime === undefined ? 'Start' : 'Stop'}
 					on:click={toggleStopwatch}
 				/>
-				<Button on:click={handleTime} disabled={!stopwatchStarted} label="Pomiar" />
+				<Button on:click={handleTime} disabled={startTime === undefined} label="Pomiar" />
 			</div>
 		</div>
 		<b class="clock">{currentTime}</b>
@@ -131,7 +78,7 @@
 		color: #444;
 		margin: 0px;
 	}
-	.container {
+	:global(.container) {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -172,7 +119,6 @@
 
 	.root {
 		height: 100vh;
-		width: 100vw;
 		justify-content: center;
 	}
 
@@ -187,114 +133,6 @@
 		border-radius: 15px;
 		box-shadow: 0px 0px 50px lightgrey;
 		overflow: hidden;
-	}
-
-	aside {
-		position: relative;
-		min-width: 300px;
-		height: 100%;
-		border-radius: 15px;
-		// background-color: #d5e5f5;
-		background: linear-gradient(135deg, #d0e0f0aa, #d5e5f577);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		box-shadow: 0px 8px 32px grey;
-		transition: all 500ms;
-		z-index: 1;
-		gap: 15px;
-
-		.btn-toggle-sidebar {
-			all: unset;
-			position: relative;
-			left: 100px;
-			top: 12px;
-			cursor: pointer;
-			transition: all 500ms;
-
-			b {
-				opacity: 0;
-				top: 6px;
-				left: 2.5rem;
-			}
-
-			:global(> *) {
-				position: absolute;
-				transition: opacity 500ms;
-			}
-
-			:global(.cross) {
-				opacity: 1;
-			}
-
-			:global(.timer) {
-				opacity: 0;
-			}
-		}
-
-		&.hidden {
-			margin-left: -300px;
-			box-shadow: none;
-
-			.btn-toggle-sidebar {
-				margin-left: 115px;
-
-				b {
-					font-size: large;
-					opacity: 1;
-					color: #808080;
-				}
-
-				:global(.cross) {
-					opacity: 0;
-				}
-
-				:global(.timer) {
-					opacity: 1;
-				}
-			}
-		}
-
-		h3 {
-			color: #6b6b6b;
-			margin: 0px;
-		}
-
-		ol {
-			display: flex;
-			flex-direction: column;
-			gap: 5px;
-			padding: 0px 25px;
-			margin: 0px;
-			width: calc(100% - 2 * 25px);
-			height: 100%;
-			list-style-position: inside;
-			overflow-y: auto;
-		}
-	}
-
-	.time {
-		display: flex;
-		align-items: center;
-		gap: 5px;
-		color: #808080;
-		background-color: white;
-		padding: 5px 10px;
-		border-radius: 5px;
-		counter-increment: times 1;
-		box-shadow: 0px 4px 8px grey;
-
-		&::before {
-			content: counter(times) '. ';
-			min-width: 1rem;
-			counter-reset: 1;
-		}
-
-		.btn-delete {
-			margin-left: auto;
-			border: none;
-			background-color: transparent;
-			cursor: pointer;
-		}
 	}
 
 	.clock {
@@ -322,26 +160,6 @@
 	@media screen and (max-width: 1000px) {
 		main {
 			width: 90%;
-		}
-		aside {
-			position: absolute;
-			min-width: 240px;
-
-			.btn-toggle-sidebar {
-				left: 80px;
-
-				:global(.cross) {
-					scale: 85%;
-				}
-			}
-
-			&.hidden {
-				margin-left: -240px;
-
-				.btn-toggle-sidebar {
-					margin-left: 100px;
-				}
-			}
 		}
 	}
 </style>
