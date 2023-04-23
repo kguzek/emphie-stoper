@@ -34,6 +34,11 @@
 		startTime = startTime === undefined ? new Date().getTime() : undefined;
 	}
 
+	/** Deletes the time with the given index in the array. */
+	function deleteTime(itemIndex: number) {
+		times = times.filter((_, timeIndex) => timeIndex !== itemIndex);
+	}
+
 	/** If the stopwatch is currently ticking, adds the current time to the list of times. */
 	function handleTime() {
 		if (startTime === undefined) return;
@@ -49,7 +54,7 @@
 
 <div class="root container {darkModeEnabled ? 'dark' : 'light'}">
 	<main>
-		<Sidebar {times} />
+		<Sidebar {times} {deleteTime} />
 		<div class="stopwatch container">
 			<div class="current-reading">
 				<b>{formattedTime}</b>

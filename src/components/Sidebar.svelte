@@ -5,6 +5,7 @@
 
 	let sidebarElement: Element;
 	export let times: Time[];
+	export let deleteTime: (itemIndex: number) => void;
 
 	function toggleSidebar() {
 		if (sidebarElement.classList.contains('hidden')) {
@@ -36,10 +37,7 @@
 			<li class="time">
 				<b>{time.primary}</b>
 				<small>{time.secondary}</small>
-				<button
-					class="btn-delete"
-					on:click={() => (times = times.filter((_, timeIndex) => timeIndex !== itemIndex))}
-				>
+				<button class="btn-delete" on:click={() => deleteTime(itemIndex)}>
 					<Icon name="trash" dimensions={18} colour="#f55" />
 				</button>
 			</li>
